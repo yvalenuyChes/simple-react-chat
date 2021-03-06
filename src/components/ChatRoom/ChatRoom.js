@@ -1,23 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
-import socket from '../../socket';
+import React, { useState, useEffect, useRef } from 'react'
+import socket from '../../socket'
+import './ChatRoom.css'
 
-function Chat({ users, messages, username, roomId, onAddMessage }) {
+function ChatRoom({ users, messages, username, roomId, onAddMessage }) {
+
   const [messageValue, setMessageValue] = useState('')
+
   const messagesRef = useRef(null)
+  const nowDate = new Date().toLocaleTimeString()
 
   const onSendMessage = () => {
-    socket.emit('ROOM:NEW_MESSAGE', {
-      username,
-      roomId,
-      text: messageValue,
-    });
-    onAddMessage({ username, text: messageValue })
-    setMessageValue('');
-  };
+    if (messageValue === '') {
+      alert('Введите сообщение')
+    } else {
+      socket.emit('ROOM:NEW_MESSAGE', {
+        username,
+        roomId,
+        text: messageValue,
+        date: nowDate
+      })
+      onAddMessage({ username, text: messageValue, date: nowDate })
+      setMessageValue('')
+    }
+  }
 
   useEffect(() => {
-    messagesRef.current.scrollTo(0, 99999);
-  }, [messages]);
+    messagesRef.current.scrollTo(0, 99999)
+  }, [messages])
 
   return (
     <div className="chat">
@@ -33,17 +42,19 @@ function Chat({ users, messages, username, roomId, onAddMessage }) {
       </div>
       <div className="chat-messages">
         <ul ref={messagesRef} className="messages">
-          {messages.map((message, index) => (
-            <li key={index}>
-              <div className="message">
-                <p>{message.text}</p>
-                <div>
-                  <span>{message.username}</span>
+          {
+            messages.map((message, index) => (
+              <li key={index}>
+                <div className="message">
+                  <p>{message.text}</p>
+                  <div className="message-info">
+                    <span>{message.username}</span>
+                    <span>{message.date}</span>
+                  </div>
                 </div>
-              </div>
-            </li>
-
-          ))}
+              </li>
+            ))
+          }
         </ul>
         <form>
           <textarea
@@ -51,13 +62,13 @@ function Chat({ users, messages, username, roomId, onAddMessage }) {
             onChange={(e) => setMessageValue(e.target.value)}
             className="form-control"
             rows="3"></textarea>
-          <button onClick={onSendMessage} type="button" className="btn btn-primary">
+          <button onClick={onSendMessage} type="button" className="btn-chat">
             Отправить
           </button>
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default Chat;
+export default ChatRoom

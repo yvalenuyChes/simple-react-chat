@@ -1,32 +1,37 @@
 import React, { useEffect, useReducer } from 'react'
 import axios from 'axios'
-
 import socket from './socket'
-
 import reducer from './reducer'
 import EnterRoom from './components/EnterRoom/EnterRoom'
 import ChatRoom from './components/ChatRoom/ChatRoom'
+
+import './style/nullstyle.css'
 
 function App() {
   const [state, dispatch] = useReducer(reducer, {
     joined: false,
     roomId: null,
     username: null,
+    date: null,
     users: [],
     messages: [],
   })
 
-  const setUsers = (users) => {
+  const setUsers = users => {
     dispatch({
       type: 'SET_USERS',
       payload: users,
     })
   }
 
-  const addMessage = (message) => {
+  const addMessage = ({ text, username, date }) => {
     dispatch({
       type: 'NEW_MESSAGE',
-      payload: message,
+      payload: {
+        text,
+        username,
+        date
+      }
     })
   }
 

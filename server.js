@@ -20,7 +20,7 @@ app.get('/rooms/:id', (req, res) => {
 })
 
 app.post('/rooms', (req, res) => {
-  const { roomId, username } = req.body
+  const { roomId } = req.body
   if (!rooms.has(roomId)) {
     rooms.set(
       roomId,
@@ -33,7 +33,7 @@ app.post('/rooms', (req, res) => {
   res.send()
 })
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
   socket.on('ROOM:JOIN', ({ roomId, username }) => {
     socket.join(roomId)
     rooms.get(roomId).get('users').set(socket.id, username)
@@ -41,10 +41,11 @@ io.on('connection', (socket) => {
     socket.to(roomId).broadcast.emit('ROOM:SET_USERS', users)
   })
 
-  socket.on('ROOM:NEW_MESSAGE', ({ roomId, username, text }) => {
+  socket.on('ROOM:NEW_MESSAGE', ({ roomId, username, text, date }) => {
     const obj = {
       username,
       text,
+      date
     }
     rooms.get(roomId).get('messages').push(obj)
     socket.to(roomId).broadcast.emit('ROOM:NEW_MESSAGE', obj)
