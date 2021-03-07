@@ -4,6 +4,8 @@ const app = express()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 
+
+
 app.use(express.json())
 
 const rooms = new Map()
@@ -61,6 +63,7 @@ io.on('connection', socket => {
   })
 
   console.log('user connected', socket.id)
+
 })
 
 server.listen(9999, (err) => {

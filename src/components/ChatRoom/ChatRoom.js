@@ -4,10 +4,10 @@ import './ChatRoom.css'
 
 function ChatRoom({ users, messages, username, roomId, onAddMessage }) {
 
+
   const [messageValue, setMessageValue] = useState('')
 
   const messagesRef = useRef(null)
-  const nowDate = new Date().toLocaleTimeString()
 
   const onSendMessage = () => {
     if (messageValue === '') {
@@ -17,16 +17,18 @@ function ChatRoom({ users, messages, username, roomId, onAddMessage }) {
         username,
         roomId,
         text: messageValue,
-        date: nowDate
+        date: new Date().toLocaleTimeString()
       })
-      onAddMessage({ username, text: messageValue, date: nowDate })
+      onAddMessage({ username, text: messageValue, date: new Date().toLocaleTimeString() })
       setMessageValue('')
     }
   }
 
+
   useEffect(() => {
     messagesRef.current.scrollTo(0, 99999)
   }, [messages])
+
 
   return (
     <div className="chat">
