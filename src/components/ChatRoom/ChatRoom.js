@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import socket from '../../socket'
 import './ChatRoom.css'
+import Button from '../ui/Button/Button'
 
 function ChatRoom({ users, messages, username, roomId, onAddMessage }) {
 
@@ -28,6 +29,12 @@ function ChatRoom({ users, messages, username, roomId, onAddMessage }) {
   useEffect(() => {
     messagesRef.current.scrollTo(0, 99999)
   }, [messages])
+
+  const onEnterByKey = e => {
+    if (e.key === 'Enter') {
+      onSendMessage()
+    }
+  }
 
 
   return (
@@ -63,10 +70,12 @@ function ChatRoom({ users, messages, username, roomId, onAddMessage }) {
             value={messageValue}
             onChange={(e) => setMessageValue(e.target.value)}
             className="form-control"
+            onKeyDown={onEnterByKey}
             rows="3"></textarea>
-          <button onClick={onSendMessage} type="button" className="btn-chat">
-            Отправить
-          </button>
+          <Button
+            buttonText={"Отправить"}
+            onClick={onSendMessage}
+          />
         </form>
       </div>
     </div>

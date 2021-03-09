@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import './EnterRoom.css'
+import Button from '../ui/Button/Button'
 
 function EnterRoom({ onLogin }) {
   const [roomId, setRoomId] = useState('')
@@ -18,6 +19,13 @@ function EnterRoom({ onLogin }) {
     setLoading(true)
     await axios.post('/rooms', obj)
     onLogin(obj)
+
+  }
+
+  const onEnterByKey = e => {
+    if (e.key === 'Enter') {
+      onEnter()
+    }
   }
 
   return (
@@ -27,16 +35,20 @@ function EnterRoom({ onLogin }) {
         placeholder="Room ID"
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
+        onKeyPress={onEnterByKey}
       />
       <input
         type="text"
         placeholder="Ваше имя"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        onKeyPress={onEnterByKey}
       />
-      <button disabled={isLoading} onClick={onEnter} className="enter-room__button">
-        {isLoading ? 'Вход...' : 'Войти'}
-      </button>
+      <Button
+        disabled={isLoading}
+        onClick={onEnter}
+        buttonText={isLoading ? 'Вход...' : 'Войти'}
+      />
     </div>
   )
 }
